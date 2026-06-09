@@ -35,7 +35,7 @@ Key decision: **the AI only extracts text from the image; all pass/fail decision
 Prerequisites: Node.js 18+, an [Anthropic API key](https://console.anthropic.com/).
 
 ```bash
-git clone <this-repo>
+git clone https://github.com/lashethan0001/ttb-label-verifier.git
 cd ttb-label-verifier
 npm install
 
