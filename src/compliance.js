@@ -11,9 +11,9 @@ export const squashSpaces = (s) => (s || "").replace(/\s+/g, " ").trim();
 // Smart quotes/dashes are common OCR-level variations that are not substantive.
 export const normalizePunct = (s) =>
   squashSpaces(s)
-    .replace(/[‘’]/g, "'")
-    .replace(/[“”]/g, '"')
-    .replace(/[–—]/g, "-");
+    .replace(/[\u2018\u2019]/g, "'")
+    .replace(/[\u201C\u201D]/g, '"')
+    .replace(/[\u2013\u2014]/g, "-");
 
 // Government warning: strict character-level check (27 CFR Part 16).
 export function checkWarningText(extractedWarning) {
@@ -32,9 +32,16 @@ export function checkWarningText(extractedWarning) {
     };
   }
   if (got.toLowerCase() === want.toLowerCase()) {
+    const prefixOk = got.startsWith("GOVERNMENT WARNING:");
+    if (!prefixOk) {
+      return {
+        verdict: "mismatch",
+        note: 'Wording matches but "GOVERNMENT WARNING:" must appear in all capital letters. (This exact issue is a common rejection.)',
+      };
+    }
     return {
-      verdict: "mismatch",
-      note: 'Wording matches but capitalization is wrong — "GOVERNMENT WARNING:" must appear in all capital letters. (This exact issue is a common rejection.)',
+      verdict: "review",
+      note: "Wording and the all-caps GOVERNMENT WARNING: prefix are correct, but the body's capitalization differs from the statutory rendering (e.g., printed entirely in capitals). Agent should confirm acceptability.",
     };
   }
   // Find first difference to help the agent locate it quickly.
