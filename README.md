@@ -72,6 +72,7 @@ The printed `https://<project>.vercel.app` URL is the deployed application. Netl
 4. **Case-only brand difference** — `STONE'S THROW` vs `Stone's Throw`. Should pass with a note, not fail.
 5. **Batch** — select 10+ images at once; they process three at a time with live status.
 6. **Bad photo** — an angled/glary shot. The model attempts the read anyway and notes quality issues; if truly unreadable, the result says so instead of guessing.
+7. **All-caps warning body** — a label where the entire warning is printed in capitals. The prefix requirement is satisfied, but the body deviates from the statutory rendering, so this is routed to Needs review rather than auto-decided. (Found via testing — see Known limitations.)
 
 AI image generators work well for creating test labels (as the brief suggests). Include the full statutory warning text when generating a "clean" label.
 
@@ -90,3 +91,4 @@ docs/APPROACH.md      Design rationale, tools, assumptions, trade-offs
 - Bottler name/address and country of origin are not yet checked (the brief's core sample fields are). Adding a field is one entry in the form, one line in the extraction prompt, one comparison function.
 - Type-size and contrast requirements for the warning are approximated by the model's "appears bold / hard to read" judgment, surfaced as **Needs review** rather than decided automatically.
 - No persistence by design — nothing is stored server-side (per IT guidance: "we're not storing anything sensitive for this exercise").
+- The all-caps-body warning case was discovered during testing: the initial version flagged it correctly but blamed the prefix in its explanation. The fix separates prefix-case violations (hard mismatch) from body-case deviations (routed to agent review), since the regulation's explicit capitalization requirement concerns the prefix.
